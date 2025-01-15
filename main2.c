@@ -9,8 +9,10 @@ HWND g_wndPB;
 static int g_width = 800;
 static int g_height = 600;
 
-static int pbar_width = 400;
-static int pbar_height = 100;
+static int pbar_width = 600;
+static int pbar_height = (650/5 - 50) / 1.5;
+static int left_padding = 100/1.5;
+static int top_padding = 50/ 1.5;
 
 // Window procedure function
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -22,8 +24,12 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
     int cyVScroll = GetSystemMetrics(SM_CYVSCROLL);
 
     HWND hwndPB = CreateWindowEx(
-        0, PROGRESS_CLASS, (LPTSTR)NULL, WS_CHILD | WS_VISIBLE, rcClient.left,
-        rcClient.bottom - cyVScroll, rcClient.right, cyVScroll, hwnd, (HMENU)0,
+        0, PROGRESS_CLASS, (LPTSTR)NULL, WS_CHILD | WS_VISIBLE,
+        rcClient.left + left_padding,
+        rcClient.top + top_padding,
+        rcClient.left + left_padding + pbar_width,
+        rcClient.top + top_padding + pbar_height,
+        hwnd, (HMENU)0,
         (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
     g_wndPB = hwndPB;
 
@@ -31,26 +37,10 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
     SendMessage(hwndPB, PBM_SETSTEP, (WPARAM)1, 0);
     SendMessage(hwndPB, PBM_SETPOS, 2, 0);
 
-    // Create a button
-    HWND hwndButton = CreateWindowEx(
-        0,
-        L"BUTTON", // Predefined class; Unicode assumed
-        L"OK",     // Button text
-        WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, // Styles
-        10,                                                    // x position
-        10,                                                    // y position
-        200,                                                   // Button width
-        40,                                                    // Button height
-        hwnd,                                                  // Parent window
-        (HMENU)button_id, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE),
-        NULL); // Pointer not needed.
     return 0;
   }
     case WM_COMMAND:
-      if (LOWORD(wParam) == button_id) {
-        SendMessage(g_wndPB, PBM_STEPIT, 0, 0);
-      }
-      return 0;
+          return 0;
     case WM_DESTROY:
       PostQuitMessage(0);
       return 0;
