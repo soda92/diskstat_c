@@ -49,6 +49,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
   RegisterClass(&wc);
 
+  RECT r;
+  GetClientRect(GetDesktopWindow(), &r);
+
+  RECT clientRect = {0, 0, 800, 600}; // Desired client area size
+  DWORD windowStyle = WS_OVERLAPPEDWINDOW;
+  DWORD extendedStyle = 0;
+
+  AdjustWindowRectEx(&clientRect, windowStyle, FALSE, extendedStyle);
+
+  int windowWidth = clientRect.right - clientRect.left;
+  int windowHeight = clientRect.bottom - clientRect.top;
+
+  int pos_x = (r.right - windowWidth)/2;
+  int pos_y = (r.bottom* 33/35 - windowHeight) /2;
+
   // Create the window
   HWND hwnd = CreateWindowEx(
     0, // Optional window styles
@@ -56,8 +71,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     L"Simple Win32 App", // Window text
     WS_OVERLAPPEDWINDOW | WS_SYSMENU | WS_CAPTION |WS_VSCROLL |WS_MAXIMIZE, // Window style
 
-    // Size and position
-    CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+    // position and size
+    pos_x, pos_y, windowWidth, windowHeight,
 
     NULL, // Parent window
     NULL, // Menu
